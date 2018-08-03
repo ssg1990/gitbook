@@ -313,3 +313,26 @@ Promise.all\(\[promise1, promise2\]\)
 
 Promise.race\(\[promise1, promise2\]\)
 
+```javascript
+getAccessPoint() { 
+ var timeout;
+ return Promise.race([bridge.getCurrentAP(),new Promise((resolve, reject) => { 
+       timeout = setTimeout(function(){
+             reject('Timeout'); 
+       }, 2000);//timeout of getting access point from app.
+       })]).then((payload) => {
+            clearTimeout(timeout); 
+            if (!payload) { return; } 
+            if (payload.uc && payload.uc.length > 0) { 
+                GLOBAL_API.conf.apiBase = payload.uc[0] + '/'
+            } 
+            if (payload.oss && payload.oss.length > 0) {
+                GLOBAL_API.conf.ossBase = payload.oss[0] + '/' } 
+        }).catch((msg) => { 
+            console.warn('getAccessPoint', msg); 
+        }) 
+}
+```
+
+
+
