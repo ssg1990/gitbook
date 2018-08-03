@@ -2,42 +2,62 @@
 
 ### 从callback和异步说起：
 
-         JS是一门单线程语言，通过回调函数来实现异步和并发。由于回调函数的多层嵌套而造成代码的阅读性差和逻辑调理混乱被称之为回调地狱。为了解决回调地狱的问题，相继出现了promise和 await/async.
+  JS是一门单线程语言，通过回调函数来实现异步和并发。由于回调函数的多层嵌套而造成代码的阅读性差和逻辑调理混乱被称之为回调地狱。为了解决回调地狱的问题，相继出现了promise和 await/async.
 
 ####  Promise   Callback 对比
 
 1.promise更好的解耦
-
-promise将context放在了promise内部，而具体的处理则放在了then中，连接仅靠参数传递，能够很好的做到解耦。
-
+  promise将context放在了promise内部，而具体的处理则放在了then中，连接仅靠参数传递，能够很好的做到解耦。
 callback方式，直接传递callback handler。这使得具体callback失去了对具体事件处理调用的次数和时机权利
 
 2.callback回调地狱
-
-由于复杂的业务逻辑，常常需要嵌套的调用回调函数，使得代码逻辑混杂难以阅读和维护。
+  由于复杂的业务逻辑，常常需要嵌套的调用回调函数，使得代码逻辑混杂难以阅读和维护。Promise通过链式调用，在很大程度上缓解了这一问题，在更新的async/await中，更好的解决了这一问题。async/await可以看成是promise的语法糖。
 
 #### 什么是promise
 
-future value , 约定
+承诺
+承诺，一但定下立即生效，在未来的某个时间一定返回结果.
 
-约定，一但定下立即生效，在未来的某个时间一定返回结果
+承诺，一但定下立即生效，在未来的某个时间一定返回结果.
 
-future value, 结果产生在未来的某个时刻，且结果是未知的。
+分析promise
+
+Promise 解构
+```javascript
+Promise(function(resolve, reject) {
+	// resolve(futureValue)
+	// reject(futureValue)
+}).then(fullfilledHandler, rejectedHandler)
+```
+
+future value
+结果产生在未来的某个时刻，结果是未知的。
+
+completion event, error event
+成功或者失败不确定,成功转入到fullfilledHandler,失败转入到rejectedHander.
 
 必然部分是立即执行和一定会有结果。 未知部分是产生结果的时间和结果的内容。
 
-promise 构造函数： 
-
-```javascript
-Promise(function(resolve, reject){
-      //resolve(v1)
-      //reject(v2)
-})
-```
-
 promise, then 与 thenable
 
-promise的核心是then方法，then方法做的事情类似于回调函数做的事情。在完成promise函数体内部的任务后，通过resolve或者reject来触发
+promise的核心是then方法，then方法做的事情类似于回调函数做的事情。在完成promise函数体内部的任务后，通过resolve或者reject来触发。就好像事件绑定触发回调函数，同时这也是异步的。
+
+
+Promise 3大状态 
+Promise有pending， resolved, rejected三个状态
+刚生成的promise处于pending状态，在resolve了之后转入到resolved状态，在reject之后转入到rejected状态。
+```javascript
+new Promise((resolve, reject) => {
+}) //pending
+new Promise((resolve, reject) => {
+	resolve(1)
+}) //resolved
+new Promise((resolve, reject) => {
+	reject(1)
+}) // rejected
+```
+\[\[PromiseStatus]]: "rejected"   // resolved,  pending
+\[\[PromiseValue]]: value         //  通过
 
 ```javascript
 let p = new Promise(function(resolve, reject){
@@ -122,7 +142,6 @@ new Promise((resolve, reject) => {
 
 new Promise.then的结果仍然是一个promise该promise 以then里面return 或者reject的值为状态
 
-promise 3大状态 pending   rejected    resolved
 
 Promise.resolve
 
